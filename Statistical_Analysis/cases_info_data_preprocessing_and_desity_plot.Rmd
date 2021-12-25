@@ -107,6 +107,22 @@ miss_idx = is.na(ct_info_cases_data$estimate_cases4)
 ct_info_cases_data$estimate_cases4[miss_idx] = 0
 ```
 
+```{r}
+ct_info_cases_data = ct_info_cases_data %>% 
+  mutate(change12exposure = (exposure2-exposure1)/exposure1,
+         change23exposure = (exposure3-exposure2)/exposure2,
+         change34exposure = (exposure4-exposure3)/exposure3,
+         change12casedensity = (estimate_cases2_density-estimate_cases1_density)/estimate_cases1_density,
+         change23casedensity = (estimate_cases3_density-estimate_cases2_density)/estimate_cases2_density,
+         change34casedensity = (estimate_cases4_density-estimate_cases3_density)/estimate_cases3_density,
+         ) %>% 
+   replace(is.na(.), 0)
+```
+
+```{r}
+mean(is.na(ct_info_cases_data$change23casedensity))
+```
+
 
 
 ```{r}
@@ -144,7 +160,6 @@ ct_info_cases_data %>%
   arrange(desc(exposure3))
 
 ```
-
 
 
 ```{r}

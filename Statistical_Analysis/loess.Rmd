@@ -1,0 +1,93 @@
+---
+title: "loess"
+author: "Yuqi_Zhang"
+date: "11/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+ct_info_cases_data = read_csv("/Users/zhangyuqi/Documents/NCSA/Exposure_Risk_Analysis_in Rural_Illinois/Statistical_Analysis/data/ct_info_cases_data.csv")
+```
+
+```{r}
+exp_income_data = ct_info_cases_data %>% 
+  select(POP_DENSITY, pop_density_class, 
+         exposure1, exposure2, exposure3, exposure4, 
+         estimate_cases1_density, estimate_cases2_density, estimate_cases3_density, estimate_cases4_density,
+         income, income_class) %>% 
+  mutate(rural_urban = as.factor(ifelse(pop_density_class %in% c(1,2), "rural", "urban")))
+```
+
+--区域的选择exposure1 <= 0.0015
+
+banwith 的选择 span = 0.5
+
+
+
+只是visualization吗，怎么看是否significant
+在图上家income的分层？
+
+function automate
+
+怎么解释
+看看paper里能给出怎么样的结论
+
+```{r}
+plotLOESS=function(exposure, phase, x){
+  p=exp_income_data  %>%
+   filter(.data[[exposure]] <= quantile(exp_income_data[,exposure], prob = 0.95,na.rm = TRUE),
+          income <= quantile(exp_income_data[,"income"], prob = 0.999,na.rm = TRUE)  ) %>%
+   ggplot() +
+   aes(x = income, y = .data[[exposure]], colour = rural_urban) +
+   geom_point(size = 0.01) +
+   scale_color_hue() +
+  # Use span to control the "wiggliness" of the default loess smoother.
+  # The span is the fraction of points used to fit each local regression:
+  # small numbers make a wigglier curve, larger numbers make a smoother curve.
+   geom_smooth(method = "loess", span = 0.5,
+               level = 0.95)+
+    geom_vline(xintercept = x, size=0.5, linetype="dotted")+
+  scale_color_viridis_d(option = "viridis") +
+     labs(x = "income", y = "Exposure Risk",
+          title = paste0("Phase ", phase)) + 
+   theme_classic()+
+     theme(aspect.ratio = 0.4) +
+      theme(legend.position = "top",
+          plot.title = element_text(hjust = 0.5, size = 13),
+          legend.text = element_text(size=8),
+          legend.title = element_blank(),
+          strip.text = element_text(size=8)
+          )# Center title position and size)+
+  p
+  # ggsave(paste0("/Users/zhangyuqi/Documents/NCSA/Exposure_Risk_Analysis_in Rural_Illinois/Statistical_Analysis/figure/Relationship between income and COVID-19 exposure risk during Phase ", phase, " in rural and urban area.png"), plot = p)
+}
+```
+
+```{r}
+plotLOESS("exposure1", 1, 137000)
+```
+
+```{r}
+plotLOESS("exposure2", 2, 129000)
+```
+
+```{r}
+plotLOESS("exposure3", 3, 126000)
+ # scale_color_brewer(palette = "Paired") +
+```
+
+```{r}
+plotLOESS("exposure4", 4, c(25000, 66000))
+```
+```{r}
+
+```
+

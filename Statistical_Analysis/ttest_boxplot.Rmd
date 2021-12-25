@@ -224,7 +224,7 @@ In both urban and rural area, people with less income has less exposure risk to 
 median1 = median(c(ct_info_cases_data %>%
    filter(pop_density_class %in% c(1,2)) %>% # urban area
    filter(exposure2 >= 0  | is.na(exposure2)) %>% 
-    select(exposure1))[[1]],na.rm = TRUE)
+    select(exposure2))[[1]],na.rm = TRUE)
 RU_boxplot1 = ct_info_cases_data %>%
    filter(pop_density_class %in% c(1,2)) %>% # urban area
    filter(exposure2 >= 0 | is.na(exposure2)) %>%
@@ -232,7 +232,7 @@ RU_boxplot1 = ct_info_cases_data %>%
    aes(x = "", y = exposure2, group = income_class) +
    geom_boxplot() +
     geom_hline(aes(yintercept = median1), col = "#990000", linetype = 5, show.legend = FALSE) +
-   coord_cartesian(ylim = c(0,0.01)) +
+   coord_cartesian(ylim = c(0,0.001)) +
   # scale_color_grey(start=0.8, end=0.2)+
   # scale_fill_distiller(palette = "Blues" ,direction = 1) +
    labs(x = "Rural Area", y = "") + 
@@ -251,7 +251,7 @@ RU_boxplot2 = ct_info_cases_data %>%
    aes(x = "", y = exposure2, group = income_class) +
    geom_boxplot() +
     geom_hline(aes(yintercept = median2), col = "#990000", linetype = 5, show.legend = FALSE) +
-   coord_cartesian(ylim = c(0,0.010)) +
+   coord_cartesian(ylim = c(0,0.001)) +
   # scale_color_grey(start=0.8, end=0.2)+
   # scale_fill_distiller(palette = "Blues" ,direction = 1) +
    labs(x = "Urban Area", y = "") + 
@@ -260,9 +260,9 @@ RU_boxplot2 = ct_info_cases_data %>%
    facet_grid(vars(), vars(income_class))
 
 p = gridExtra::grid.arrange(RU_boxplot1, RU_boxplot2, ncol = 2,
-                        left = "Exposure Entropy",
-                        top = "COVID-19 Exposure Entropy during Phase 2 in Rural and Urban Illinois") 
-ggsave( "/Users/zhangyuqi/Desktop/exposure/COVID-19 Exposure Entropy during Phase 2 in Rural and Urban Illinois.png", plot = p)
+                        left = "Exposure Risk",
+                        top = "COVID-19 Exposure Risk during Phase 2 in Rural and Urban Illinois") 
+ggsave( "/Users/zhangyuqi/Desktop/test/exposure/COVID-19 Exposure Risk during Phase 2 in Rural and Urban Illinois.png", plot = p)
 ```
 
 
